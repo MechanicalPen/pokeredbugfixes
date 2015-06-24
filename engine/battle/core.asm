@@ -70,6 +70,7 @@ AlwaysHappenSideEffects: ; 3c030 (f:4030)
 	db RECOIL_EFFECT
 	db TWINEEDLE_EFFECT
 	db RAGE_EFFECT
+	db HYPER_BEAM_EFFECT ;fix hyper beam not needing recharge on faint
 	db -1
 SpecialEffects: ; 3c03b (f:403b)
 ; Effects from arrays 2, 4, and 5B, minus Twineedle and Rage.
@@ -7218,15 +7219,9 @@ SleepEffect: ; 3f1fc (f:71fc)
 	ld bc, W_PLAYERBATTSTATUS2
 
 .sleepEffect
-	ld a, [bc]
-	bit NeedsToRecharge, a ; does the target need to recharge? (hyper beam)
-	res NeedsToRecharge, a ; target no longer needs to recharge
-	ld [bc], a
-	jr nz, .setSleepCounter ; if the target had to recharge, all hit tests will be skipped
-	                        ; including the event where the target already has another status
 	ld a, [de]
 	ld b, a
-	and $7
+	and $7 ;Sleep bit.
 	jr z, .notAlreadySleeping ; can't affect a mon that is already asleep
 	ld hl, AlreadyAsleepText
 	jp PrintText
@@ -7234,6 +7229,11 @@ SleepEffect: ; 3f1fc (f:71fc)
 	ld a, b
 	and a
 	jr nz, .didntAffect ; can't affect a mon that is already statused
+	ld a, [bc]
+	bit NeedsToRecharge, a ; does the target need to recharge? (hyper beam)
+	res NeedsToRecharge, a ; target no longer needs to recharge
+	ld [bc], a
+	jr nz, .setSleepCounter ; if the target had to recharge, all hit tests will be skipped
 	push de
 	call MoveHitTest ; apply accuracy tests
 	pop de
