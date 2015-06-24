@@ -1,3 +1,9 @@
+# Pokemon Red and Blue :bigfix edition
+
+This is an edit of the Pokémon Red and Blue disassembly, to fix all known bugs.
+
+the original readme follows:
+
 # Pokémon Red and Blue
 
 This is a disassembly of Pokémon Red and Blue.
